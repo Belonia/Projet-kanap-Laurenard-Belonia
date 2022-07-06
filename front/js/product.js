@@ -71,13 +71,13 @@ const addCart = (productItem) => {
       altText: productItem.altText,
       imageUrl: productItem.imageUrl,
       description: productItem.description,
-      price: productItem.price,
       color: productColor,
       quantity: quantity,
       name: productItem.name,
     };
     //---------------------------------------
 
+    // ajout quantité produit plutot que ajout de plusieurs  produits similaires dans le localstorage
     let cart = [];
 
     try {
@@ -102,7 +102,7 @@ const addCart = (productItem) => {
     localStorage.setItem("cart_list", JSON.stringify(cart));
   });
 };
-
+//----------------------------------------
 const fetchIdAndItem = () => {
   const id = getProductIdFromUrl();
   fetchItem(id);
