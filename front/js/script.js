@@ -6,8 +6,8 @@ const fetchData = () => {
     })
     .then(generateItems);
 };
-//-----------------------------------------
-// on crée les elements html via JS
+//-------------------------------
+// creation des elements HTML via JS
 const generateItems = (productItems) => {
   productItems.forEach(generateItem);
 };
@@ -30,4 +30,4 @@ const generateItem = (productItem) => {
 };
 
 window.addEventListener("DOMContentLoaded", fetchData);
-//----------------------------------------------
+//-------------------
