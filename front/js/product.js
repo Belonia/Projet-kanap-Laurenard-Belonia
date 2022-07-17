@@ -19,7 +19,6 @@ const fetchItem = (id) => {
 
 // Recuperation des elements HTML
 const generateItem = (productItem) => {
-  console.log(productItem);
   const imgProduct = document.createElement("img");
   imgProduct.src = `${productItem.imageUrl}`;
   imgProduct.alt = `${productItem.altTxt}`;
@@ -40,21 +39,19 @@ const generateItem = (productItem) => {
     tagOption.innerHTML = `${color}`;
     tagOption.value = `${color}`;
     select.appendChild(tagOption);
-    console.log(color);
   });
   addCart(productItem);
 };
 //------------------------------------------------
 
-// Ajout des produits au panier
+// addCart Ajout des produits au panier
 const addCart = (productItem) => {
   const button = document.getElementById("addToCart");
   button.addEventListener("click", () => {
     const productColor = document.getElementById("colors").value;
-    console.log(productColor);
-    console.log(productItem);
+
     const quantity = parseInt(document.getElementById("quantity").value);
-    console.log(quantity);
+
     if (
       productColor == null ||
       productColor === "" ||
@@ -62,44 +59,44 @@ const addCart = (productItem) => {
       quantity == 0
     ) {
       alert("Veuillez selectionner une couleur et une quantité ");
-    }
-    //---------------------------------------------
-
-    // données du localStorage
-    const data = {
-      _id: productItem._id,
-      altText: productItem.altText,
-      imageUrl: productItem.imageUrl,
-      description: productItem.description,
-      color: productColor,
-      quantity: quantity,
-      name: productItem.name,
-    };
-    //---------------------------------------
-
-    // ajout quantité produit plutot que ajout de plusieurs  produits similaires dans le localstorage
-    let cart = [];
-
-    try {
-      const existingCart = JSON.parse(localStorage.getItem("cart_list"));
-      cart.push(...existingCart);
-    } catch (e) {
-      console.log("no local storage element");
-    }
-
-    const index = cart.findIndex(
-      (element) => element.id === data.id && element.color === data.color
-    );
-
-    if (index > -1) {
-      const existingProduct = cart[index];
-      existingProduct.quantity = existingProduct.quantity + data.quantity;
-      cart[index] = existingProduct;
     } else {
-      cart.push(data);
-    }
+      // données du localStorage
+      const data = {
+        _id: productItem._id,
+        altText: productItem.altText,
+        imageUrl: productItem.imageUrl,
+        description: productItem.description,
+        color: productColor,
+        quantity: quantity,
+        name: productItem.name,
+      };
+      alert("Article(s) ajouté(s) au panier !");
+      //fin données du localStorage---------------------------------------
 
-    localStorage.setItem("cart_list", JSON.stringify(cart));
+      // ajout quantité produit plutot que ajout de plusieurs produits similaires dans le localstorage
+      let cart = [];
+
+      try {
+        const existingCart = JSON.parse(localStorage.getItem("cart_list"));
+        cart.push(...existingCart);
+      } catch (e) {
+        console.log("no local storage element");
+      }
+
+      const index = cart.find(
+        (element) => element.id === data.id && element.color === data.color
+      );
+
+      if (index > -1) {
+        const existingProduct = cart[index];
+        existingProduct.quantity = existingProduct.quantity + data.quantity;
+        cart[index] = existingProduct;
+      } else {
+        cart.push(data);
+      }
+
+      localStorage.setItem("cart_list", JSON.stringify(cart));
+    }
   });
 };
 //----------------------------------------

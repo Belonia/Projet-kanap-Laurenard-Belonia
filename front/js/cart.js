@@ -34,6 +34,7 @@ const onQuantityChange = (event, product) => {
   window.location.reload();
 };
 //-------------------------------------------
+
 // Suppression des produits du panier
 let produitTab = JSON.parse(localStorage.getItem("cart_list"));
 
@@ -47,8 +48,9 @@ function onDeletion(product) {
   window.location.reload();
 }
 //-----------------------------------------------
-let products = [];
+
 // creation des elements html du panier
+let products = [];
 const createElement = (product, data) => {
   const cartItems = document.getElementById("cart__items");
   const child = document.createElement("article");
@@ -58,7 +60,7 @@ const createElement = (product, data) => {
   imageDiv.className = "cart__item__img";
 
   const image = document.createElement("img");
-  console.log(product.imageUrl);
+
   image.src = product.imageUrl;
   image.alt = product.altText;
 
@@ -126,22 +128,19 @@ const createElement = (product, data) => {
   child.appendChild(contentDiv);
   cartItems.appendChild(child);
 };
+// recoverData pour recuperer l'id
 const recoverData = (product) => {
   fetch(`http://localhost:3000/api/products/${product._id}`)
     .then((reponse) => {
       return reponse.json();
     })
     .then((data) => {
-      console.log(data);
       createElement(product, data);
       computeTotal(data);
     });
 };
 const panierDisplay = () => {
-  console.log("ok");
   if (addProduct) {
-    console.log(addProduct);
-
     addProduct.forEach((product, i) => {
       recoverData(product);
       products.push(product._id);
@@ -247,11 +246,11 @@ form.email.addEventListener("change", checkingMail);
 let buttonForm = document.querySelector("#order");
 
 //validation du formulaire
-let contact = {};
+
 function validCart() {
   buttonForm.addEventListener("click", (e) => {
     e.preventDefault();
-    contact = {
+    const contact = {
       firstName: document.querySelector("#firstName").value,
       lastName: document.querySelector("#lastName").value,
       address: document.querySelector("#address").value,
@@ -259,8 +258,7 @@ function validCart() {
       email: document.querySelector("#email").value,
     };
     if (testFirstName && testLastName && testAddress && testCity && testMail) {
-      localStorage.setItem("contact", JSON.stringify(contact));
-      sendToServer();
+      sendToServer(contact);
     } else {
       alert("Erreur dans la saisie des informations personnelles");
     }
@@ -270,27 +268,30 @@ validCart();
 //---------------------------------------------------
 
 // //recuperation de l'URL
-const url = "http://localhost:3000/api/products/order";
 
 //requete post
-async function sendToServer() {
-  const requete = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify({ contact, products }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+async function sendToServer(contact) {
+  if (products.length) {
+    const requete = await fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+      body: JSON.stringify({ contact, products }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  if (!requete.ok) {
-    alert("Une erreur s'est produite !");
-  } else {
-    let reponse = await requete.json();
+    if (!requete.ok) {
+      alert("Une erreur s'est produite !");
+    } else {
+      let reponse = await requete.json();
 
-    orderId = reponse.orderId;
+      orderId = reponse.orderId;
 
-    if (orderId != "") {
-      location.href = "confirmation.html?id=" + orderId;
+      if (orderId != "") {
+        location.href = "confirmation.html?id=" + orderId;
+      }
     }
+  } else {
+    alert("Veuillez selectionner un produit");
   }
 }
