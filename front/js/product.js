@@ -63,12 +63,8 @@ const addCart = (productItem) => {
       // données du localStorage
       const data = {
         _id: productItem._id,
-        altText: productItem.altText,
-        imageUrl: productItem.imageUrl,
-        description: productItem.description,
         color: productColor,
         quantity: quantity,
-        name: productItem.name,
       };
       alert("Article(s) ajouté(s) au panier !");
       //fin données du localStorage---------------------------------------
@@ -83,8 +79,8 @@ const addCart = (productItem) => {
         console.log("no local storage element");
       }
 
-      const index = cart.find(
-        (element) => element.id === data.id && element.color === data.color
+      const index = cart.findIndex(
+        (element) => element._id === data._id && element.color === data.color
       );
 
       if (index > -1) {

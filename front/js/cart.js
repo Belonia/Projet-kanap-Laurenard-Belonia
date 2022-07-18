@@ -1,15 +1,12 @@
 const addProduct = JSON.parse(localStorage.getItem("cart_list"));
 
 // calcule des produits dans le panier
-const computeTotal = (data) => {
-  let totalPrice = 0;
-  let totalQuantity = 0;
-  if (addProduct) {
-    addProduct.forEach((product) => {
-      totalPrice += data.price * product.quantity;
-      totalQuantity += product.quantity;
-    });
-  }
+let totalPrice = 0;
+let totalQuantity = 0;
+const computeTotal = (data, product) => {
+  totalPrice += data.price * product.quantity;
+  totalQuantity += product.quantity;
+
   document.getElementById("totalPrice").innerHTML = totalPrice;
   document.getElementById("totalQuantity").innerHTML = totalQuantity;
 };
@@ -20,7 +17,7 @@ const onQuantityChange = (event, product) => {
   const newQuantity = parseInt(event.currentTarget.value);
 
   const index = addProduct.findIndex(
-    (element) => element.id === product.id && element.color === product.color
+    (element) => element._id === product._id && element.color === product.color
   );
 
   if (index > -1) {
@@ -61,8 +58,8 @@ const createElement = (product, data) => {
 
   const image = document.createElement("img");
 
-  image.src = product.imageUrl;
-  image.alt = product.altText;
+  image.src = data.imageUrl;
+  image.alt = data.altText;
 
   imageDiv.appendChild(image);
   child.appendChild(imageDiv);
@@ -73,7 +70,7 @@ const createElement = (product, data) => {
   const descriptionDiv = document.createElement("div");
   descriptionDiv.className = "cart__item__content__description";
   const title = document.createElement("h2");
-  title.innerHTML = product.name;
+  title.innerHTML = data.name;
 
   const color = document.createElement("p");
   color.innerHTML = product.color;
@@ -136,12 +133,12 @@ const recoverData = (product) => {
     })
     .then((data) => {
       createElement(product, data);
-      computeTotal(data);
+      computeTotal(data, product);
     });
 };
 const panierDisplay = () => {
   if (addProduct) {
-    addProduct.forEach((product, i) => {
+    addProduct.forEach((product) => {
       recoverData(product);
       products.push(product._id);
     });
